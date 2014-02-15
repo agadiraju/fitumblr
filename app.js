@@ -2,7 +2,7 @@ var env = process.env.NODE_ENV || 'production',
 	config = require('./config')[env];
 
 
-var express = require('express);
+var express = require('express');
 	http = require('http'),
 	OAuth = require('oauth'),
 	passport = require('passport');
