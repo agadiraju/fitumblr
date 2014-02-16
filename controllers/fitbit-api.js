@@ -13,36 +13,56 @@ var oauth = new OAuth.OAuth('https://api.fitbit.com/oauth/request_token',
 		    'HMAC-SHA1'
 );
 
-function getWeekStats(encodedId, callback, api_call) {
-	console.log("Getting weekly stats for", encodedId);
-	
-        var week = [];
-	var counter = 0;
-	for (var i = 1; i < 8; i++)
-	{
-        	today = (moment().subtract('days', i).format("YYYY-MM-DD"));
-		oauth.get(
-			'https://api.fitbit.com/1/user/-/" + api_call + "/date/' + today + '.json',
-			user.accessToken,
-			user.accessSecret,
-			function(err, data, res) {
-				if (err) {
+function getActivityStats(token, secret, callback, api_call) {	
+	console.log("Getting activity stats");
+
+	var today = (moment().utc().format("YYYY-MM-DD"));
+	oauth.get(
+		'https://api.fitbit.com/1/user/-/activities/' + api_call + '/date/' + today + '/7d.json',
+		token,
+		secret,
+		function(err, data, res) {
+			if (err) {
 					console.error("Error fetching activity data", err);
 					callback(err);
 					return ;
-				}
-				
-				data = JSON.parse(data);
-				console.log("stats for " + today, data);
-				day = [today, data];
-				week.push(day);
-				if (week.length == 7) {
-					callback(err, week, api_call);
-				}
 			}
-		);
-	}
-} 
+				
+			data = JSON.parse(data);
+			console.log("activity stats for last seven days" + data);
+
+			callback(err, data, api_call);
+			
+		}
+	);
+}
+
+function getSleepStats(token, secret, callback, api_call) {
+	console.log("Getting sleep stats");
+	
+	var today = (moment().utc().format("YYYY-MM-DD"));
+	oauth.get(
+		'https://api.fitbit.com/1/user/-/sleep/' + api_call + '/date/' + today + '/7d.json',
+		token,
+		secret,
+		function(err, data, res) {
+			if (err) {
+					console.error("Error fetching sleep data", err);
+					callback(err);
+					return ;
+			}
+				
+			data = JSON.parse(data);
+			console.log("sleep stats for last seven days" + data);
+
+			callback(err, data, api_call);
+			
+		}
+	);
+}
+
+
+
 
 function dataCallback(err, weekData, api_param) {
 	if (err)
@@ -51,18 +71,26 @@ function dataCallback(err, weekData, api_param) {
 		return ;
 	}
 	
+	console.log("in callback")
 	console.log(weekData);	
 }
 
-function notificationsReceived(req, res) {
+function getFitbitData(req, res) {
 	// Immediately send HTTP 204 No Content
 	res.send(204);
 
+  console.log(req.user.token_info[0]);
+  console.log(req.user.token_info[1]);
+
+  var token = req.user.token_info[0];
+  var secret = req.user.token_info[1];
+  getActivityStats(token, secret, dataCallback, "steps");
+  getSleepStats(token, secret, dataCallback, "efficiency");
 	// TODO: Verify req.headers['x-fitbit-signature'] to ensure it's Fitbit
 
-	fs.readFile(req.files.updates.path, {encoding: 'utf8'}, function (err, data) {
+	/*fs.readFile(req.files.updates.path, {encoding: 'utf8'}, function (err, data) {
 		if (err) console.error(err);
-		data = JSON.parse(data);
+		data = JSON.parse(data);*/
 
 		// [
 		// 	 {
@@ -72,15 +100,16 @@ function notificationsReceived(req, res) {
 		// 	}
 		// ]
 
-		for (var i = 0; i < data.length; i++) {
+		/*for (var i = 0; i < data.length; i++) {
 			console.log(data[i]);
-			getWeekStats(data[i].ownerId, dataCallback, "activities");
-			getWeekStats(data[i].ownerId, dataCallback, "sleep");
-		}
-	});
+			getActivityStats(data[i].ownerId, dataCallback, "steps");
+			getSleepStats(data[i].ownerId, dataCallback, "efficiency");
+		}*/
+	//});
 };
 
 
-module.exports.notificationsReceived = notificationsReceived;
-module.exports.getWeekStats = getWeekStats;
+module.exports.getFitbitData = getFitbitData;
+module.exports.ActivityStats = getActivityStats;
+module.exports.getSleepStats = getSleepStats;
 

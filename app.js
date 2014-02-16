@@ -23,7 +23,7 @@ passport.deserializeUser(function(obj, done) {
 
 //Tell Passport to use Fitbit Strategy
 
-console.log("http://" + config.host + "/auth/fitbit/callback");
+//console.log("http://" + config.host + "/auth/fitbit/callback");
 
 passport.use(new FitBitStrategy({
                 consumerKey: config.fitbitClientKey,
@@ -35,8 +35,8 @@ passport.use(new FitBitStrategy({
 
 		/*oauth.get(
 			'http://api.fitbit.com/1/user/-/activities/calories/date/today/7d.json',
-			token,
-			tokenSecret,
+			req.user.token_info[0],
+			req.user.token_info[1],
 			function(err, data, res) {
 				if (err) console.error(err);
 				console.log("update" + data);
@@ -65,12 +65,13 @@ var IndexController = require('./controllers/index'),
 	FitbitApiController = require('./controllers/fitbit-api');
 
 app.get('/', IndexController.index);
+app.get('/getFitbitData', FitbitApiController.getFitbitData)
 app.get('/auth/fitbit/?', passport.authenticate('fitbit'));
 app.get('/auth/fitbit/callback', 
   passport.authenticate('fitbit'),
   function(req, res) {
     console.log(req.user);
-    res.redirect('/');
+    res.redirect('/getFitbitData');
   });
 
 
