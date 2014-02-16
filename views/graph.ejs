@@ -11,7 +11,7 @@
 
 
 	  var weeklySummary = JSON.parse('<%-JSON.stringify(weeklySummary)%>');
-
+    //var personal = JSON.parse('<%-JSON.stringify(personalSummary)%>');
 
 
 
@@ -56,7 +56,7 @@
 			"Abhishek walked " + weeklySummary['activities-steps'] + " steps while burning " + weeklySummary['activities-calories'] + " calories, that's " + weeklySummary['activities-distance'] + " miles. He stayed sedentary for " + weeklySummary['minutesSedentary'] + " minutes.", 
 			40, 40, 420, 28);
 		wrapText(context, 
-			"His quality of sleep was " + weeklySummary['sleep-efficiency'] + "%, he awoke only " + weeklySummary['sleep-awakeningsCount'] + " times.", 
+			"His quality of sleep was " + parseFloat(weeklySummary['sleep-efficiency'] / 7).toFixed(2) + "%, he awoke only " + weeklySummary['sleep-awakeningsCount'] + " times.", 
 			40, 240, 420, 28);
 
 

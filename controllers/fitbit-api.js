@@ -101,7 +101,10 @@ function getFitbitData(req, res) {
       weeklySummary[key] = total;
    });    
     console.log(weeklySummary);
-    res.render('../views/graph.ejs', {weeklySummary: weeklySummary});
+    res.render('../views/graph.ejs', {
+    	weeklySummary: weeklySummary,
+    	//personalData: personalData
+    });
   });  
 };
 
