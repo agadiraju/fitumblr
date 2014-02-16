@@ -70,41 +70,39 @@ function getFitbitData(req, res) {
 
   var token = req.user.token_info[0];
   var secret = req.user.token_info[1];
+  var weeklySummary = {};
   async.parallel([
     function(callback) {
-      activityStats = getActivityStats(token, secret, callback, "steps");
+      getActivityStats(token, secret, callback, "steps");
     },
     function(callback) {
-      SleepStats = getSleepStats(token, secret, callback, "efficiency");
+      getActivityStats(token, secret, callback, "calories");
+    },
+    function(callback) {
+     getActivityStats(token, secret, callback, "distance");
+    },
+    function(callback) {
+      getActivityStats(token, secret, callback, "minutesSedentary");
+    },
+    function(callback) {
+      getSleepStats(token, secret, callback, "efficiency");
+    },
+    function(callback) {
+      getSleepStats(token, secret, callback, "awakeningsCount");
     }
   ], function(err, results) { //This function gets called after the two tasks have called their "task callbacks"
     if (err) return next(err);
-    console.log("activity stats for last seven days" + results[0]);
-    console.log("sleep stats for last seven days" + results[1]);
-    res.render('../views/graph.ejs', {results: results});
+    results.forEach(function(entry) {
+     var total = 0;
+      var key = Object.keys(entry)[0];
+     entry[Object.keys(entry)[0]].forEach(function(item){
+        total = parseInt(total) + parseInt(item.value);
+     });
+      weeklySummary[key] = total;
+   });    
+    console.log(weeklySummary);
+    res.render('../views/graph.ejs', {weeklySummary: weeklySummary});
   });  
-
-
-  	// TODO: Verify req.headers['x-fitbit-signature'] to ensure it's Fitbit
-
-	/*fs.readFile(req.files.updates.path, {encoding: 'utf8'}, function (err, data) {
-		if (err) console.error(err);
-		data = JSON.parse(data);*/
-
-		// [
-		// 	 {
-		// 		collectionType: 'activities',
-		// 		date: '2013-10-21',
-		// 		subscriptionId: '23RJ9B-all'
-		// 	}
-		// ]
-
-		/*for (var i = 0; i < data.length; i++) {
-			console.log(data[i]);
-			getActivityStats(data[i].ownerId, dataCallback, "steps");
-			getSleepStats(data[i].ownerId, dataCallback, "efficiency");
-		}*/
-	//});
 };
 
 

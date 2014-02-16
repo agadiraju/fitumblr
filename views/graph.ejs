@@ -3,8 +3,107 @@
 <head>
   <meta charset="utf-8" />
   <title>Your Weekly Stats</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 </head>
 <body>
-  <%- JSON.stringify(results) %>
+  <canvas id="myCanvas" width="500" height="400" style="margin: 0px auto; display: block;"></canvas>
+  <script>
+
+
+	  var weeklySummary = JSON.parse('<%-JSON.stringify(weeklySummary)%>');
+
+
+
+
+	  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+	    var words = text.split(' ');
+	    var line = '';
+
+	    for(var n = 0; n < words.length; n++) {
+	      var testLine = line + words[n] + ' ';
+	      var metrics = context.measureText(testLine);
+	      var testWidth = metrics.width;
+	      if (testWidth > maxWidth && n > 0) {
+	        context.fillText(line, x, y);
+	        line = words[n] + ' ';
+	        y += lineHeight;
+	      }
+	      else {
+	        line = testLine;
+	      }
+	    }
+	    context.fillText(line, x, y);
+	  }
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    context.rect(0, 0, canvas.width, canvas.height);
+
+    // // add linear gradient
+    // var grd = context.createLinearGradient(500, 500, 50, canvas.height);
+    // // light blue
+    // grd.addColorStop(0, '#fff');   
+    // // dark blue
+    // grd.addColorStop(1, '#004CB3');
+    context.fillStyle = "#3dcfff";
+		context.fillRect(0, 0, 500, 200);
+    context.fillStyle = "#191919";
+		context.fillRect(0, 200, 500, 200);
+
+		context.fillStyle="#fff";
+		context.font="22px HelveticaNeue-Light";
+		context.textBaseline="top";
+		wrapText(context, 
+			"Abhishek walked " + weeklySummary['activities-steps'] + " steps while burning " + weeklySummary['activities-calories'] + " calories, that's " + weeklySummary['activities-distance'] + " miles. He stayed sedentary for " + weeklySummary['minutesSedentary'] + " minutes.", 
+			40, 40, 420, 28);
+		wrapText(context, 
+			"His quality of sleep was " + weeklySummary['sleep-efficiency'] + "%, he awoke only " + weeklySummary['sleep-awakeningsCount'] + " times.", 
+			40, 240, 420, 28);
+
+
+
+		drawing = new Image();
+		drawing.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF4AAAAYCAIAAAD8sd1IAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozMjg2OThFNThGMzQxMUUzOTY2REU5MzUwRDFGNUE4QiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozMjg2OThFNjhGMzQxMUUzOTY2REU5MzUwRDFGNUE4QiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjMyODY5OEUzOEYzNDExRTM5NjZERTkzNTBEMUY1QThCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjMyODY5OEU0OEYzNDExRTM5NjZERTkzNTBEMUY1QThCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+qZWbswAACcxJREFUeNrEWQtM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";
+		context.drawImage(drawing,391,361);
+</script>
+</body>
+<span id="tumblr_button_abc123" style="text-align: center; display: block; margin-top: 30px;"></span>
+
+<script type="text/javascript">
+
+	  var tumblr_photo_source = '';
+	  var tumblr_photo_caption = "My weekly fitbit summary from fitumblr.";
+	  var tumblr_photo_click_thru = "";
+
+		try {
+		    var img = document.getElementById('myCanvas').toDataURL('image/png').split(',')[1];
+		} catch(e) {
+		    var img = document.getElementById('myCanvas').toDataURL().split(',')[1];
+		}
+
+		$.ajax({
+		    url: 'https://api.imgur.com/3/image',
+		    type: 'post',
+		    headers: {
+		        Authorization: 'Client-ID 663fcf658bf15ba'
+		    },
+		    data: {
+		        image: img
+		    },
+		    dataType: 'json',
+		    success: function(response) {
+		        if(response.success) {
+		            console.log(response.data.link);
+		            tumblr_photo_source = response.data.link;
+	  						var tumblr_photo_caption = "my weekly fitbit summary from fitumblr.";
+								var tumblr_button = document.createElement("a");
+								    tumblr_button.setAttribute("href", "http://www.tumblr.com/share/photo?source=" + encodeURIComponent(tumblr_photo_source) + "&caption=" + encodeURIComponent(tumblr_photo_caption) + "&clickthru=" + encodeURIComponent(tumblr_photo_click_thru));
+								    tumblr_button.setAttribute("title", "Share on Tumblr");
+								    tumblr_button.setAttribute("style", "display:inline-block; text-indent:-9999px; overflow:hidden; width:81px; height:20px; background:url('http://platform.tumblr.com/v1/share_1.png') top left no-repeat transparent;");
+								    tumblr_button.innerHTML = "Share on Tumblr";
+								    document.getElementById("tumblr_button_abc123").appendChild(tumblr_button);
+		        }
+		    }
+		});
+</script>
 </body>
 </html>
