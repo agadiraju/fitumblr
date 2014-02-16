@@ -15,6 +15,7 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use(express.cookieParser('TODO Random String: Fitbit is awesome!'));
 app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -25,7 +26,7 @@ var IndexController = require('./controllers/index'),
 	FitbitApiController = require('./controllers/fitbit-api');
 
 app.get('/', IndexController.index);
-app.get('/auth/fitibit', passport.authenticate('fitbit'));
+app.get('/auth/fitbit/?', passport.authenticate('fitbit'));
 app.get('/auth/fitbit/callback', passport.authenticate('fitbit', {failureReDirect: '/?error=auth-failed' }),
 	function(req, res) {
 		res.redirect('/');

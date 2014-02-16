@@ -3,7 +3,7 @@ var env = process.env.NODE_ENV || 'production',
 
 var OAuth = require('oauth'),
             passport = require('passport'),
-            FitBitStrategy = require('fitbit-passport').Strategy;
+            FitBitStrategy = require('passport-fitbit').Strategy;
 
 passport.serializeUser(function(user, done) {
 	// console.log("serialize user", user);
@@ -24,6 +24,7 @@ passport.use(new FitBitStrategy({
 	},
 	function(token, tokenSecret, profile, done) {
 		
+		console.log('my nigga')
 		var oauth = new OAuth.OAuth (
 			'https://api.fitbit.com/oauth/request_token',
 			'https://api.fitbit.com/oauth/access_token',

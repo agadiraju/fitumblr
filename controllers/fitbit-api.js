@@ -68,8 +68,6 @@ function notificationsReceived(req, res) {
 		// 	 {
 		// 		collectionType: 'activities',
 		// 		date: '2013-10-21',
-		// 		ownerId: '23RJ9B',
-		// 		ownerType: 'user',
 		// 		subscriptionId: '23RJ9B-all'
 		// 	}
 		// ]
