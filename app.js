@@ -30,30 +30,18 @@ passport.use(new FitBitStrategy({
 		consumerSecret: config.fitbitClientSecret
 	},
 	function(token, tokenSecret, profile, done) {
-		
-		console.log('my nigga')
-		var oauth = new OAuth.OAuth (
-			'https://api.fitbit.com/oauth/request_token',
-			'https://api.fitbit.com/oauth/access_token',
-			config.fitbitClientKey,
-			config.fitbitClientSecret,
-			'1.0',
-			null,
-			'HMAC-SHA1'
-		);
+    profile['token_info'] = [token, tokenSecret];
+	  return done(null, profile);
 
-		oauth.post(
-			'https://api.fitbit.com/1/user/-/apiSubscriptions/' + profile.id + '-all.json',
+		/*oauth.get(
+			'http://api.fitbit.com/1/user/-/activities/calories/date/today/7d.json',
 			token,
 			tokenSecret,
-			null,
-			null,
 			function(err, data, res) {
 				if (err) console.error(err);
-				console.log("update");
-				return done(null, profile);
+				console.log("update" + data);
 			}
-		);
+		);*/
 	}
 ));
 	
@@ -79,8 +67,9 @@ var IndexController = require('./controllers/index'),
 app.get('/', IndexController.index);
 app.get('/auth/fitbit/?', passport.authenticate('fitbit'));
 app.get('/auth/fitbit/callback', 
-  passport.authenticate('fitbit', { failureRedirect: '/' }),
+  passport.authenticate('fitbit'),
   function(req, res) {
+    console.log(req.user);
     res.redirect('/');
   });
 
