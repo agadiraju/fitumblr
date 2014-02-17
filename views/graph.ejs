@@ -11,9 +11,6 @@
 
 
 	  var weeklySummary = JSON.parse('<%-JSON.stringify(weeklySummary)%>');
-    //var personal = JSON.parse('<%-JSON.stringify(personalSummary)%>');
-
-
 
 	  function wrapText(context, text, x, y, maxWidth, lineHeight) {
 	    var words = text.split(' ');
@@ -53,10 +50,10 @@
 		context.font="22px HelveticaNeue-Light";
 		context.textBaseline="top";
 		wrapText(context, 
-			"Abhishek walked " + weeklySummary['activities-steps'] + " steps while burning " + weeklySummary['activities-calories'] + " calories, that's " + weeklySummary['activities-distance'] + " miles. He stayed sedentary for " + weeklySummary['minutesSedentary'] + " minutes.", 
+			"Abhishek walked " + weeklySummary['activities-steps'] + " steps while burning " + weeklySummary['activities-calories'] + " calories, that's " + weeklySummary['activities-distance'] + " miles. He exercised for an average of " + parseFloat(weeklySummary['activities-minutesVeryActive'] / 7).toFixed(2) + " minutes per day.", 
 			40, 40, 420, 28);
 		wrapText(context, 
-			"His quality of sleep was " + parseFloat(weeklySummary['sleep-efficiency'] / 7).toFixed(2) + "%, he awoke only " + weeklySummary['sleep-awakeningsCount'] + " times.", 
+			"His quality of sleep was " + parseFloat(weeklySummary['sleep-efficiency'] / 7).toFixed(2) + "%, he awoke  an average of " + (weeklySummary['sleep-awakeningsCount']/7).toFixed(2) + " times per night.", 
 			40, 240, 420, 28);
 
 

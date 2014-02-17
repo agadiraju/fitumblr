@@ -82,7 +82,7 @@ function getFitbitData(req, res) {
      getActivityStats(token, secret, callback, "distance");
     },
     function(callback) {
-      getActivityStats(token, secret, callback, "minutesSedentary");
+      getActivityStats(token, secret, callback, "minutesVeryActive");
     },
     function(callback) {
       getSleepStats(token, secret, callback, "efficiency");
