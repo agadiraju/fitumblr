@@ -71,6 +71,9 @@ function getFitbitData(req, res) {
   var token = req.user.token_info[0];
   var secret = req.user.token_info[1];
   var weeklySummary = {};
+  var personalSummary = req.user._json.user;
+  //console.log("PERSONAL SUMMARY");
+  //console.log(personalSummary);
   async.parallel([
     function(callback) {
       getActivityStats(token, secret, callback, "steps");
@@ -103,7 +106,7 @@ function getFitbitData(req, res) {
     console.log(weeklySummary);
     res.render('../views/graph.ejs', {
     	weeklySummary: weeklySummary,
-    	//personalData: personalData
+    	personalSummary: personalSummary
     });
   });  
 };

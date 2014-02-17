@@ -70,7 +70,9 @@ app.get('/auth/fitbit/?', passport.authenticate('fitbit'));
 app.get('/auth/fitbit/callback', 
   passport.authenticate('fitbit'),
   function(req, res) {
-    console.log(req.user);
+  	//console.log("IN THE MUTTHAFUCKIN APP.JS")
+    //console.log(req.user._json.user);
+    //console.log("FIN")
     res.redirect('/getFitbitData');
   });
 
